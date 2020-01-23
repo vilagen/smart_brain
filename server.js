@@ -9,25 +9,28 @@ const signin = require('./controllers/signin');
 const profile = require('./controllers/profile');
 const image = require('./controllers/image');
 
-// const db = knex({
-//   client: 'pg',
-//   connection: {
-//     host : '',
-//     user : '',
-//     password : '',
-//     database : 'smartbrain'
-//   }
-// });
+require('dotenv').config();
+const pgPassword = process.env.DB_PASS;
 
 const db = knex({
-  client: 'mysql',
+  client: 'pg',
   connection: {
     host : 'localhost',
-    user : 'root',
-    password : 'password',
+    user : 'postgres',
+    password : pgPassword,
     database : 'smartbrain'
   }
 });
+
+// const db = knex({
+//   client: 'mysql',
+//   connection: {
+//     host : 'localhost',
+//     user : 'root',
+//     password : 'password',
+//     database : 'smartbrain'
+//   }
+// });
 
 const app = express();
 
