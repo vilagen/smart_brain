@@ -13,6 +13,11 @@ const image = require('./controllers/image');
 require('dotenv').config();
 const pgPassword = process.env.DB_PASS;
 
+// const db = knex({
+//   client: 'pg',
+//   connction: process.env.POSTGRES_URI
+// })
+
 const db = knex({
   client: 'pg',
   connection: {
@@ -22,8 +27,6 @@ const db = knex({
     database : process.env.POSTGRES_DB,
   }
 });
-
-
 
 // const db = knex({
 //   client: 'mysql',

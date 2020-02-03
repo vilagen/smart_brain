@@ -9,10 +9,15 @@ services:
     command: npm start
     working_dir: /usr/src/smart-brain-api
     environment: 
-      POSTGRES_USER: Sally
+      POSTGRES_USER: sally
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: smart-brain-docker
       POSTGRES_HOST: postgres
+
+    # environment: 
+      # POSTGRES_URI: postgres://sally:secret@postgres:5431/smart-brain-docker 
+      # on a local machine, would look like postgres://sally:secret@localhost:5431/smart-brain-docker on command line use psql.
+
     links:
       - postgres
     ports: 
@@ -23,10 +28,11 @@ services:
   # This is for Postgres
   postgres:
     environment: 
-      POSTGRES_USER: Sally
+      POSTGRES_USER: sally
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: smart-brain-docker
       POSTGRES_HOST: postgres
-    image: postgres
+    build: ./postgres
+    # the build is referring to building what is in the postgres folder
     ports:
-      - "5432:5432"
+      - "5431:5432"
