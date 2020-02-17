@@ -1,5 +1,8 @@
 import React from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { onRouteChange } from '../Navigation/Navigation';
+
+import './ProfileIcon.css'
 
 class ProfileIcon extends React.Component {
   constructor(props) {
@@ -30,13 +33,14 @@ class ProfileIcon extends React.Component {
               className="br-100 ba h3 w3 dib" alt="avatar" 
             />
           </DropdownToggle>
-          <DropdownMenu className='b--transparent shadwo-5' 
-          style={{marginTop: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
-            <DropdownItem>View Profile</DropdownItem>
-            <DropdownItem>Sign Out</DropdownItem>
+          <DropdownMenu
+            right
+            className="b--transparent shadwo-5" 
+            style={{backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
+              <DropdownItem>Profile</DropdownItem>
+              <DropdownItem onClick={ () => this.props.onRouteChange('signout')}>Sign Out</DropdownItem>
           </DropdownMenu>
         </Dropdown>
-
       </div>
     )
   }
