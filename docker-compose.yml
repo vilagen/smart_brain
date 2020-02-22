@@ -13,6 +13,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: smart-brain-docker
       POSTGRES_HOST: postgres
+      REDIS_URI: redis://redis:6379
 
     # environment: 
       # POSTGRES_URI: postgres://sally:secret@postgres:5431/smart-brain-docker 
@@ -20,6 +21,7 @@ services:
 
     links:
       - postgres
+      - redis
     ports: 
       - "3001:3001"
     volumes: 
@@ -36,3 +38,9 @@ services:
     # the build is referring to building what is in the postgres folder
     ports:
       - "5431:5432"
+ 
+  # This is for Redis
+  redis:
+    image: redis
+    ports: 
+      - "6379:6379"
