@@ -61,7 +61,21 @@ class App extends Component {
       .then(res => res.json())
       .then(data => {
         if (data && data.id) {
-          console.log('Success! We need to get user profile!!');
+          fetch(`http://localhost:3001/profile/${data.id}`, {
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': token
+            }
+          })
+          .then(res => res.json())
+          .then(user => {
+            if (user && user.email) {
+              console.log(user)
+              this.loadUser(user)
+              this.onRouteChange('home');
+            }
+          })
         }
       })
       .catch(console.log("Don't have token or failed to work properly."));
@@ -79,33 +93,41 @@ class App extends Component {
   }
 
   calculateFaceLocations = (data) => {
-    return data.outputs[0].data.regions.map(face => {
-      const clarifaiFaces = face.region_info.bounding_box;
-      const image = document.getElementById('inputimage');
-      const width = Number(image.width);
-      const height = Number(image.height);
-      return {
-        leftCol: clarifaiFaces.left_col * width,
-        topRow: clarifaiFaces.top_row * height,
-        rightCol: width - (clarifaiFaces.right_col * width),
-        bottomRow: height - (clarifaiFaces.bottom_row * height)
-      };
-    });
+    if (data && data.outputs) { // not sure if this was needed after fixing function to detect multiple faces
+      return data.outputs[0].data.regions.map(face => {
+        const clarifaiFaces = face.region_info.bounding_box;
+        const image = document.getElementById('inputimage');
+        const width = Number(image.width);
+        const height = Number(image.height);
+        return {
+          leftCol: clarifaiFaces.left_col * width,
+          topRow: clarifaiFaces.top_row * height,
+          rightCol: width - (clarifaiFaces.right_col * width),
+          bottomRow: height - (clarifaiFaces.bottom_row * height)
+        };
+      });
+    }
+    return
   };
 
   displayFaceBox = (boxes) => {
-    this.setState({boxes: boxes});
-  }
+    if (boxes) {
+      this.setState({boxes: boxes});
+    };
+  };
 
   onInputChange = (event) => {
     this.setState({input: event.target.value});
-  }
+  };
 
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
       fetch('http://localhost:3001/imageurl', {
         method: 'post',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': window.sessionStorage.getItem('token'),
+        },
         body: JSON.stringify({
           input: this.state.input
         })
@@ -115,7 +137,10 @@ class App extends Component {
         if (response) {
           fetch('http://localhost:3001/image', {
             method: 'put',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': window.sessionStorage.getItem('token'),
+            },
             body: JSON.stringify({
               id: this.state.user.id
             })

@@ -35,12 +35,26 @@ class Signin extends React.Component {
       .then(response => response.json())
       .then(data => {
         if (data.userId && data.success === 'true') {
-          this.saveAuthTokenInSession(data.token);
-          this.props.loadUser(data);
-          this.props.onRouteChange('home');
+          this.saveAuthTokenInSession(data.token)
+              fetch(`http://localhost:3001/profile/${data.userId}`, {
+                method: 'get',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': data.token,
+                }
+              })
+            .then(res => res.json())
+            .then(user => {
+              if (user && user.email) {
+                console.log(user)
+                this.props.loadUser(user)
+                this.props.onRouteChange('home');
+              }
+            })
+          .catch(console.log)
         }
       })
-  }
+    }
 
   render() {
     const { onRouteChange } = this.props;
@@ -87,6 +101,7 @@ class Signin extends React.Component {
       </article>
     );
   }
+
 }
 
 export default Signin;

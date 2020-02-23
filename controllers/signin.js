@@ -24,6 +24,10 @@ const redis = require("redis");
 //     .catch(err => res.status(400).json('wrong credentials'))
 // }
 
+// sign in will have the following outlook:
+
+
+
 //setup Redis:
 const redisClient = redis.createClient(process.env.REDIS_URI);
 
@@ -65,12 +69,13 @@ const createSessions = (user) => {
     .then(() =>  { 
       return {success: 'true', userId: id, token} 
     })
-    .catch(console.log)
+    .catch(console.log);
 };
 
 const getAuthTokenId = (req, res) => {
   const { authorization } = req.headers;
-  redisClient.get(authorization, (err, reply) => {
+  return redisClient.get(authorization, (err, reply) => {
+    console.log(reply)
     if (err || !reply ) {
       return res.status(400).json('Unauthorized');
     }
@@ -79,7 +84,7 @@ const getAuthTokenId = (req, res) => {
 };
 
 const signinAuthentication = (db, bcrypt) => (req, res) => {
-  const { authorization } = req.header;
+  const { authorization } = req.headers;
   return authorization ? getAuthTokenId(req, res) : 
     handleSignin(db, bcrypt, req, res)
       .then(data => {
@@ -91,5 +96,6 @@ const signinAuthentication = (db, bcrypt) => (req, res) => {
 };
 
 module.exports = {
-  signinAuthentication: signinAuthentication
+  signinAuthentication: signinAuthentication,
+  redisClient: redisClient
 };
