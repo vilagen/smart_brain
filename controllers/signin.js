@@ -95,7 +95,19 @@ const signinAuthentication = (db, bcrypt) => (req, res) => {
       .catch(err => res.status(400).json(err));
 };
 
+const handleSignout = (req, res) => {
+  const { authorization } = req.headers;
+  return redisClient.DEL(authorization, (err, reply) => {
+    console.log('Token deleted.');
+    if(err || !reply) {
+      return res.status(400).json('Token not deleted');
+    };
+    return
+  });
+};
+
 module.exports = {
   signinAuthentication: signinAuthentication,
-  redisClient: redisClient
+  redisClient: redisClient,
+  handleSignout: handleSignout,
 };

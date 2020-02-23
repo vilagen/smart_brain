@@ -48,6 +48,7 @@ app.use(bodyParser.json());
 // app.get('/', (req, res)=> { res.send(db.users) });
 app.get('/', (req, res)=> { res.send("It's Working!") });
 app.post('/signin', signin.signinAuthentication(db, bcrypt));
+app.post('/signout', (req, res) => { signin.handleSignout(req, res) });
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 app.get('/profile/:id', auth.requireAuth, (req, res) => { profile.handleProfileGet(req, res, db)});
 app.post('/profile/:id', auth.requireAuth, (req, res) => { profile.handleProfileUpdate(req, res, db)});

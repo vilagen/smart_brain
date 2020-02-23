@@ -160,7 +160,15 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      return this.setState(initialState)
+      fetch('http://localhost:3001/signout', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': window.sessionStorage.getItem('token'),
+        },
+      });
+      window.sessionStorage.removeItem('token');
+      return this.setState(initialState); // initial state for route is "home", so when signing out, going back to home.
     } else if (route === 'home') {
       this.setState({isSignedIn: true})
     }
