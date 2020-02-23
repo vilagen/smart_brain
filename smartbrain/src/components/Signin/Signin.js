@@ -18,6 +18,11 @@ class Signin extends React.Component {
     this.setState({signInPassword: event.target.value})
   }
 
+  saveAuthTokenInSession = (token) => {
+    // window.localStorage.setItem('token', token) // session/local storage is a way to save information on the browser. It uses key, value ('token', token in this case)
+    window.sessionStorage.setItem('token', token) // session storage may be the preferred method.
+  }
+
   onSubmitSignIn = () => {
     fetch('http://localhost:3001/signin', {
       method: 'post',
@@ -29,8 +34,9 @@ class Signin extends React.Component {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.userId) {
-          this.props.loadUser(data)
+        if (data.userId && data.success === 'true') {
+          this.saveAuthTokenInSession(data.token);
+          this.props.loadUser(data);
           this.props.onRouteChange('home');
         }
       })

@@ -47,6 +47,27 @@ class App extends Component {
     this.state = initialState;
   }
 
+  componentDidMount() {
+    const token = window.sessionStorage.getItem('token');
+    console.log(token);
+    if (token) {
+      fetch('http://localhost:3001/signin', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token // usually use 'Bearer ' + token
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.id) {
+          console.log('Success! We need to get user profile!!');
+        }
+      })
+      .catch(console.log("Don't have token or failed to work properly."));
+    }
+  }
+
   loadUser = (data) => {
     this.setState({user: {
       id: data.id,
