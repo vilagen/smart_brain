@@ -17,6 +17,7 @@ class ProfileIcon extends React.Component {
     ...prevState, //this isn't necassary but showing another way to call a state.
     dropdownOpen: !prevState.dropdownOpen
     }));
+    console.log(this.state.dropdownOpen);
   };
 
   render() {
