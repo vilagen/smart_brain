@@ -23,24 +23,64 @@ class Register extends React.Component {
     this.setState({password: event.target.value})
   }
 
+  saveAuthTokenInSession = (token) => {
+    // window.localStorage.setItem('token', token) // session/local storage is a way to save information on the browser. It uses key, value ('token', token in this case)
+    window.sessionStorage.setItem('token', token) // session storage may be the preferred method.
+  }
+
+  // onSubmitSignIn = () => {
+  //   fetch('http://localhost:3001/register', {
+  //     method: 'post',
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: JSON.stringify({
+  //       email: this.state.email,
+  //       password: this.state.password,
+  //       name: this.state.name
+  //     })
+  //   })
+  //     .then(response => response.json())
+  //     .then(user => {
+  //       if (user.id) {
+  //         this.props.loadUser(user)
+  //         this.props.onRouteChange('home');
+  //       }
+  //     })
+  // }
+
   onSubmitSignIn = () => {
     fetch('http://localhost:3001/register', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
+        name: this.state.name,
         email: this.state.email,
         password: this.state.password,
-        name: this.state.name
       })
     })
       .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
+      .then(data => {
+        if (data.userId && data.success === 'true') {
+          this.saveAuthTokenInSession(data.token)
+              fetch(`http://localhost:3001/profile/${data.userId}`, {
+                method: 'get',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': data.token,
+                }
+              })
+            .then(res => res.json())
+            .then(user => {
+              if (user && user.email) {
+                console.log(user)
+                this.props.loadUser(user)
+                this.props.onRouteChange('home');
+              }
+            })
+          .catch(console.log)
         }
       })
-  }
+    }
+
 
   render() {
     return (
